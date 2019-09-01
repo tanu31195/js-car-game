@@ -3,6 +3,21 @@
 <head>
   <title>JavaScript Car Game</title>
   <style>
+    .startScreen {
+      text-align: center;
+      border: 1px solid red;
+      padding: 15px;
+      margin: auto;
+      position: absolute;
+      background-color: red;
+      left: 44.5%;
+      top: 100px;
+      color: white;
+      z-index: 1;
+      width: 180px;
+      font-family: sans-serif;
+    }
+
     .hide {
       display: none;
     }
@@ -14,7 +29,12 @@
       margin: auto;
       width: 50px;
       height: 100px;
-      background-color: green;
+      background-color: white;
+      font-size: 20px;
+      text-align: center;
+      vertical-align: middle;
+      background-image: url(car.png);
+      background-size: cover;
     }
 
     .line {
@@ -33,14 +53,23 @@
       position: relative;
       margin: auto;
     }
+
+    .score {
+      background-color: black;
+      height: 60px;
+      color: white;
+      text-align: center;
+      font-size: 20px;
+      font-family: monospace;
+    }
   </style>
 </head>
 
 <body>
   <div class="score"></div>
   <div class="game">
-    <div class="startScreen">Welcome message</div>
-    <div class="gameArea hide"></div>
+    <div class="startScreen">Click here to start game <br> Use arrow keys to move </div>
+    <div class="gameArea"></div>
   </div>
 
   <script>
@@ -49,7 +78,8 @@
     const gameArea = document.querySelector(".gameArea");
 
     let player = {
-      speed: 5
+      speed: 5,
+      score: 0
     };
 
     let keys = {
@@ -89,10 +119,12 @@
       ene.forEach(function(item) {
         if (isCollide(car, item)) {
           console.log("HIT!");
+          endGame();
         }
         if (item.y >= 1500) {
           item.y = -600;
           item.style.left = Math.floor(Math.random() * 150) + "px";
+          item.style.backgroundColor = randomColor();
         }
         item.y += player.speed;
         item.style.top = item.y + "px";
@@ -122,6 +154,9 @@
         car.style.left = player.x + 'px';
         car.style.top = player.y + 'px';
         window.requestAnimationFrame(playGame);
+
+        player.score++;
+        score.innerText = "Score: " + player.score;
       }
     }
 
@@ -137,10 +172,18 @@
       console.log(keys);
     }
 
+    function endGame() {
+      player.start = false;
+      score.innerHTML = "Game Over<br>You Scored " + player.score;
+      startScreen.classList.remove("hide");
+    }
+
     function start() {
       startScreen.classList.add("hide");
-      gameArea.classList.remove("hide");
+      // gameArea.classList.remove("hide");
+      gameArea.innerHTML = "";
       player.start = true;
+      player.score = 0;
 
       for (let i = 0; i < 10; i++) {
         let div = document.createElement("div");
@@ -153,21 +196,31 @@
       window.requestAnimationFrame(playGame);
 
       let car = document.createElement("div");
-      car.innerText = "Car";
+      car.innerText = "P1";
       car.setAttribute("class", "car");
       gameArea.appendChild(car);
 
       player.x = car.offsetLeft;
       player.y = car.offsetTop;
-      for (let i = 0; i < 3; i++) {
+      for (let i = 0; i < 4; i++) {
         let enemy = document.createElement("div");
         enemy.classList.add("enemy");
+        enemy.innerHTML = (i + 1);
         enemy.y = ((i + 1) * 600) * -1;
         enemy.style.top = enemy.y + "px";
         enemy.style.left = Math.floor(Math.random() * 150) + "px";
-        enemy.style.backgroundColor = "red";
+        // enemy.style.backgroundColor = "red";
+        enemy.style.backgroundColor = randomColor();
         gameArea.appendChild(enemy);
       }
+    }
+
+    function randomColor() {
+      function c() {
+        let hex = Math.floor(Math.random() * 256).toString(16);
+        return("0" + String(hex)).substr(-2);
+      }
+      return "#"+c()+c()+c();
     }
   </script>
 </body>
