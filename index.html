@@ -8,6 +8,14 @@
       border: 1px solid red;
       padding: 15px;
       margin: auto;
+      position: absolute;
+      background-color: red;
+      left: 44.5%;
+      top: 100px;
+      color: white;
+      z-index: 1;
+      width: 180px;
+      font-family: sans-serif;
     }
 
     .hide {
@@ -21,7 +29,12 @@
       margin: auto;
       width: 50px;
       height: 100px;
-      background-color: green;
+      background-color: white;
+      font-size: 20px;
+      text-align: center;
+      vertical-align: middle;
+      background-image: url(car.png);
+      background-size: cover;
     }
 
     .line {
@@ -56,7 +69,7 @@
   <div class="score"></div>
   <div class="game">
     <div class="startScreen">Click here to start game <br> Use arrow keys to move </div>
-    <div class="gameArea hide"></div>
+    <div class="gameArea"></div>
   </div>
 
   <script>
@@ -111,6 +124,7 @@
         if (item.y >= 1500) {
           item.y = -600;
           item.style.left = Math.floor(Math.random() * 150) + "px";
+          item.style.backgroundColor = randomColor();
         }
         item.y += player.speed;
         item.style.top = item.y + "px";
@@ -166,7 +180,8 @@
 
     function start() {
       startScreen.classList.add("hide");
-      gameArea.classList.remove("hide");
+      // gameArea.classList.remove("hide");
+      gameArea.innerHTML = "";
       player.start = true;
       player.score = 0;
 
@@ -181,21 +196,31 @@
       window.requestAnimationFrame(playGame);
 
       let car = document.createElement("div");
-      car.innerText = "Car";
+      car.innerText = "P1";
       car.setAttribute("class", "car");
       gameArea.appendChild(car);
 
       player.x = car.offsetLeft;
       player.y = car.offsetTop;
-      for (let i = 0; i < 3; i++) {
+      for (let i = 0; i < 4; i++) {
         let enemy = document.createElement("div");
         enemy.classList.add("enemy");
+        enemy.innerHTML = (i + 1);
         enemy.y = ((i + 1) * 600) * -1;
         enemy.style.top = enemy.y + "px";
         enemy.style.left = Math.floor(Math.random() * 150) + "px";
-        enemy.style.backgroundColor = "red";
+        // enemy.style.backgroundColor = "red";
+        enemy.style.backgroundColor = randomColor();
         gameArea.appendChild(enemy);
       }
+    }
+
+    function randomColor() {
+      function c() {
+        let hex = Math.floor(Math.random() * 256).toString(16);
+        return("0" + String(hex)).substr(-2);
+      }
+      return "#"+c()+c()+c();
     }
   </script>
 </body>
